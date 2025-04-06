@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dinusha Salon | Premium Beauty Experience</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- p5.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'serif'],
+                        'sans': ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        'salon-pink': '#FFD6E0',
+                        'salon-dark': '#2A2A2A',
+                        'salon-gold': '#D4AF37',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 1s ease-in',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #FFD6E0 0%, #FFFFFF 100%);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-20px);
+            }
+
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-salon-pink text-salon-dark font-sans antialiased overflow-x-hidden">
+
+    <!-- 3D Background Element -->
+    <div id="threejs-bg" class="fixed top-0 left-0 w-full h-full -z-10 opacity-20"></div>
+
+    <!-- Floating p5.js Elements -->
+    <div id="p5-container" class="fixed top-0 left-0 w-full h-full -z-10"></div>
+
+    <!-- Header with Hero Section -->
+    <header class="hero-gradient min-h-screen flex flex-col justify-center items-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-10"></div>
+
+        <div class="relative z-10 text-center px-6">
+            <h1 class="text-5xl md:text-7xl font-serif font-bold mb-4 animate-fade-in">Dinusha Salon</h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">Where luxury meets personal care in an experience
+                designed just for you</p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#booking"
+                    class="bg-salon-dark hover:bg-opacity-90 text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105">
+                    Book Now
+                </a>
+                <a href="#services"
+                    class="border-2 border-salon-dark hover:bg-salon-dark hover:text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105">
+                    Our Services
+                </a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 scroll-indicator">
+            <svg class="w-8 h-8 text-salon-dark animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3">
+                </path>
+            </svg>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg shadow-sm">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <a href="#" class="text-xl font-serif font-bold text-salon-dark">Dinusha</a>
+
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-salon-dark hover:text-salon-gold transition">About</a>
+                    <a href="#services" class="text-salon-dark hover:text-salon-gold transition">Services</a>
+                    <a href="#team" class="text-salon-dark hover:text-salon-gold transition">Our Team</a>
+                    <a href="#gallery" class="text-salon-dark hover:text-salon-gold transition">Gallery</a>
+                    <a href="#contact" class="text-salon-dark hover:text-salon-gold transition">Contact</a>
+                </div>
+
+                <a href="#booking"
+                    class="hidden md:block bg-salon-dark hover:bg-opacity-90 text-white px-6 py-2 rounded-full font-medium transition">
+                    Book Appointment
+                </a>
+
+                <button class="md:hidden text-salon-dark">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-6 max-w-6xl mx-auto">
+        <div class="flex flex-col lg:flex-row items-center gap-12">
+            <div class="lg:w-1/2">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6">Our Philosophy</h2>
+                <p class="text-lg mb-4">
+                    At Dinusha Salon, we believe beauty is an art form and every client is a masterpiece in the making.
+                    Our approach combines time-honored techniques with cutting-edge innovations to deliver truly
+                    transformative results.
+                </p>
+                <p class="text-lg mb-6">
+                    Founded in 2010, we've grown from a small neighborhood salon to a premier beauty destination, all
+                    while maintaining our commitment to personalized care and exceptional service.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex items-center">
+                        <div
+                            class="w-12 h-12 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mr-3">
+                            <i class="fas fa-award text-salon-gold text-xl"></i>
+                        </div>
+                        <span>15+ Industry Awards</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div
+                            class="w-12 h-12 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mr-3">
+                            <i class="fas fa-user-friends text-salon-gold text-xl"></i>
+                        </div>
+                        <span>10,000+ Happy Clients</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:w-1/2 relative">
+                <div class="bg-salon-gold bg-opacity-10 p-8 rounded-2xl border border-salon-gold border-opacity-30">
+                    <h3 class="font-serif text-2xl mb-4">Why Choose Us?</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-salon-gold mt-1 mr-3"></i>
+                            <span>Certified professionals with 5+ years experience</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-salon-gold mt-1 mr-3"></i>
+                            <span>Premium, cruelty-free products</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-salon-gold mt-1 mr-3"></i>
+                            <span>Customized beauty solutions</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-salon-gold mt-1 mr-3"></i>
+                            <span>Hygiene-first approach</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-salon-gold mt-1 mr-3"></i>
+                            <span>Luxurious, relaxing environment</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">Our Signature Services</h2>
+                <p class="max-w-2xl mx-auto text-lg">Experience the pinnacle of beauty treatments with our expertly
+                    crafted services</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service Card 1 -->
+                <div
+                    class="bg-salon-pink rounded-2xl overflow-hidden shadow-md transition-all duration-300 service-card">
+                    <div class="p-6">
+                        <div
+                            class="w-16 h-16 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mb-4">
+                            <i class="fas fa-cut text-salon-gold text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold mb-2">Precision Haircuts</h3>
+                        <p class="mb-4">Masterfully crafted cuts that complement your features and lifestyle</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">From $45</span>
+                            <a href="#" class="text-salon-gold hover:underline">Learn more →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Card 2 -->
+                <div
+                    class="bg-salon-pink rounded-2xl overflow-hidden shadow-md transition-all duration-300 service-card">
+                    <div class="p-6">
+                        <div
+                            class="w-16 h-16 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mb-4">
+                            <i class="fas fa-paint-brush text-salon-gold text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold mb-2">Artistic Coloring</h3>
+                        <p class="mb-4">Bespoke color services using premium, ammonia-free products</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">From $75</span>
+                            <a href="#" class="text-salon-gold hover:underline">Learn more →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Card 3 -->
+                <div
+                    class="bg-salon-pink rounded-2xl overflow-hidden shadow-md transition-all duration-300 service-card">
+                    <div class="p-6">
+                        <div
+                            class="w-16 h-16 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mb-4">
+                            <i class="fas fa-spa text-salon-gold text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold mb-2">Luxury Facials</h3>
+                        <p class="mb-4">Customized skin treatments for radiant, healthy-looking skin</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">From $90</span>
+                            <a href="#" class="text-salon-gold hover:underline">Learn more →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Card 4 -->
+                <div
+                    class="bg-salon-pink rounded-2xl overflow-hidden shadow-md transition-all duration-300 service-card">
+                    <div class="p-6">
+                        <div
+                            class="w-16 h-16 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mb-4">
+                            <i class="fas fa-heart text-salon-gold text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold mb-2">Bridal Packages</h3>
+                        <p class="mb-4">Complete bridal beauty solutions for your perfect day</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">From $250</span>
+                            <a href="#" class="text-salon-gold hover:underline">Learn more →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Card 5 -->
+                <div
+                    class="bg-salon-pink rounded-2xl overflow-hidden shadow-md transition-all duration-300 service-card">
+                    <div class="p-6">
+                        <div
+                            class="w-16 h-16 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mb-4">
+                            <i class="fas fa-hand-sparkles text-salon-gold text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold mb-2">Nail Artistry</h3>
+                        <p class="mb-4">Creative nail designs and treatments using vegan polishes</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">From $35</span>
+                            <a href="#" class="text-salon-gold hover:underline">Learn more →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Card 6 -->
+                <div
+                    class="bg-salon-pink rounded-2xl overflow-hidden shadow-md transition-all duration-300 service-card">
+                    <div class="p-6">
+                        <div
+                            class="w-16 h-16 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mb-4">
+                            <i class="fas fa-leaf text-salon-gold text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold mb-2">Holistic Treatments</h3>
+                        <p class="mb-4">Natural, organic treatments for hair and skin wellness</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">From $65</span>
+                            <a href="#" class="text-salon-gold hover:underline">Learn more →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="py-20 bg-salon-dark text-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">Meet Our Artists</h2>
+                <p class="max-w-2xl mx-auto text-lg opacity-80">Our team of certified beauty experts brings passion and
+                    precision to every service</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Team Member 1 -->
+                <div
+                    class="bg-white bg-opacity-10 rounded-2xl overflow-hidden backdrop-filter backdrop-blur-lg border border-white border-opacity-10">
+                    <div class="p-6">
+                        <div
+                            class="w-32 h-32 rounded-full bg-salon-gold bg-opacity-20 mx-auto mb-6 flex items-center justify-center">
+                            <i class="fas fa-user text-salon-gold text-5xl"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-center mb-1">Dinusha</h3>
+                        <p class="text-salon-gold text-center mb-4">Founder & Master Stylist</p>
+                        <p class="text-center opacity-80 mb-4">15+ years transforming hair with visionary precision</p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#"
+                                class="w-8 h-8 rounded-full bg-white bg-opacity-10 flex items-center justify-center hover:bg-salon-gold transition">
+                                <i class="fab fa-instagram text-xs"></i>
+                            </a>
+                            <a href="#"
+                                class="w-8 h-8 rounded-full bg-white bg-opacity-10 flex items-center justify-center hover:bg-salon-gold transition">
+                                <i class="fab fa-facebook-f text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div
+                    class="bg-white bg-opacity-10 rounded-2xl overflow-hidden backdrop-filter backdrop-blur-lg border border-white border-opacity-10">
+                    <div class="p-6">
+                        <div
+                            class="w-32 h-32 rounded-full bg-salon-gold bg-opacity-20 mx-auto mb-6 flex items-center justify-center">
+                            <i class="fas fa-user text-salon-gold text-5xl"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-center mb-1">Priya</h3>
+                        <p class="text-salon-gold text-center mb-4">Color Specialist</p>
+                        <p class="text-center opacity-80 mb-4">Transforming hair with innovative color techniques</p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#"
+                                class="w-8 h-8 rounded-full bg-white bg-opacity-10 flex items-center justify-center hover:bg-salon-gold transition">
+                                <i class="fab fa-instagram text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div
+                    class="bg-white bg-opacity-10 rounded-2xl overflow-hidden backdrop-filter backdrop-blur-lg border border-white border-opacity-10">
+                    <div class="p-6">
+                        <div
+                            class="w-32 h-32 rounded-full bg-salon-gold bg-opacity-20 mx-auto mb-6 flex items-center justify-center">
+                            <i class="fas fa-user text-salon-gold text-5xl"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-center mb-1">Anjali</h3>
+                        <p class="text-salon-gold text-center mb-4">Skin Care Expert</p>
+                        <p class="text-center opacity-80 mb-4">Creating radiant complexions through advanced treatments
+                        </p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#"
+                                class="w-8 h-8 rounded-full bg-white bg-opacity-10 flex items-center justify-center hover:bg-salon-gold transition">
+                                <i class="fab fa-instagram text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Member 4 -->
+                <div
+                    class="bg-white bg-opacity-10 rounded-2xl overflow-hidden backdrop-filter backdrop-blur-lg border border-white border-opacity-10">
+                    <div class="p-6">
+                        <div
+                            class="w-32 h-32 rounded-full bg-salon-gold bg-opacity-20 mx-auto mb-6 flex items-center justify-center">
+                            <i class="fas fa-user text-salon-gold text-5xl"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-center mb-1">Rohan</h3>
+                        <p class="text-salon-gold text-center mb-4">Nail Artist</p>
+                        <p class="text-center opacity-80 mb-4">Crafting miniature works of art on your nails</p>
+                        <div class="flex justify-center space-x-3">
+                            <a href="#"
+                                class="w-8 h-8 rounded-full bg-white bg-opacity-10 flex items-center justify-center hover:bg-salon-gold transition">
+                                <i class="fab fa-instagram text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 bg-salon-pink">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">Client Experiences</h2>
+                <p class="max-w-2xl mx-auto text-lg">What our valued clients say about their Dinusha Salon journey</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mr-4">
+                            <i class="fas fa-user text-salon-gold"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Sarah J.</h4>
+                            <div class="flex text-salon-gold">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>"Dinusha transformed my damaged hair into shiny, healthy locks. The color is exactly what I
+                        wanted - natural with dimension. I get compliments daily!"</p>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mr-4">
+                            <i class="fas fa-user text-salon-gold"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Michael T.</h4>
+                            <div class="flex text-salon-gold">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>"As a guy who was nervous about salon visits, the team made me feel completely comfortable. Best
+                        haircut I've ever had - will definitely be back."</p>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-salon-gold bg-opacity-20 flex items-center justify-center mr-4">
+                            <i class="fas fa-user text-salon-gold"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Emma L.</h4>
+                            <div class="flex text-salon-gold">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>"The bridal package was worth every penny. I felt like a princess on my wedding day. The makeup
+                        lasted perfectly through tears and dancing!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="bg-salon-dark text-white rounded-2xl overflow-hidden shadow-xl">
+                <div class="md:flex">
+                    <div class="md:w-1/2 p-10 bg-salon-gold bg-opacity-10 border-r border-salon-gold border-opacity-20">
+                        <h2 class="text-3xl font-serif font-bold mb-6">Book Your Appointment</h2>
+                        <p class="mb-6 opacity-90">Ready to experience the Dinusha difference? Schedule your visit
+                            today.</p>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-phone-alt text-salon-gold mr-4"></i>
+                                <div>
+                                    <p class="text-sm opacity-80">Call us directly</p>
+                                    <p class="font-bold">(077) 123-4567</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope text-salon-gold mr-4"></i>
+                                <div>
+                                    <p class="text-sm opacity-80">Email us</p>
+                                    <p class="font-bold">book@dinushasalon.com</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt text-salon-gold mr-4"></i>
+                                <div>
+                                    <p class="text-sm opacity-80">Visit us</p>
+                                    <p class="font-bold">123 Beauty Street, Colombo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="md:w-1/2 p-10">
+                        <form class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium opacity-80 mb-1">Your Name</label>
+                                <input type="text"
+                                    class="w-full px-4 py-3 rounded-lg bg-salon-dark bg-opacity-50 border border-salon-gold border-opacity-30 focus:outline-none focus:ring-2 focus:ring-salon-gold">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium opacity-80 mb-1">Email</label>
+                                <input type="email"
+                                    class="w-full px-4 py-3 rounded-lg bg-salon-dark bg-opacity-50 border border-salon-gold border-opacity-30 focus:outline-none focus:ring-2 focus:ring-salon-gold">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium opacity-80 mb-1">Service</label>
+                                <select
+                                    class="w-full px-4 py-3 rounded-lg bg-salon-dark bg-opacity-50 border border-salon-gold border-opacity-30 focus:outline-none focus:ring-2 focus:ring-salon-gold">
+                                    <option>Select a service</option>
+                                    <option>Haircut</option>
+                                    <option>Coloring</option>
+                                    <option>Facial</option>
+                                    <option>Bridal Package</option>
+                                    <option>Nail Services</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium opacity-80 mb-1">Preferred Date</label>
+                                <input type="date"
+                                    class="w-full px-4 py-3 rounded-lg bg-salon-dark bg-opacity-50 border border-salon-gold border-opacity-30 focus:outline-none focus:ring-2 focus:ring-salon-gold">
+                            </div>
+
+                            <button type="submit"
+                                class="w-full bg-salon-gold hover:bg-opacity-90 text-salon-dark font-bold py-3 px-4 rounded-lg transition">
+                                Request Appointment
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 bg-salon-pink">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">Our Work</h2>
+                <p class="max-w-2xl mx-auto text-lg">Explore our portfolio of transformations</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Gallery items would go here -->
+                <div class="aspect-square bg-salon-dark bg-opacity-10 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-camera text-4xl opacity-30"></i>
+                </div>
+                <div class="aspect-square bg-salon-dark bg-opacity-10 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-camera text-4xl opacity-30"></i>
+                </div>
+                <div class="aspect-square bg-salon-dark bg-opacity-10 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-camera text-4xl opacity-30"></i>
+                </div>
+                <div class="aspect-square bg-salon-dark bg-opacity-10 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-camera text-4xl opacity-30"></i>
+                </div>
+                <div class="aspect-square bg-salon-dark bg-opacity-10 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-camera text-4xl opacity-30"></i>
+                </div>
+                <div class="aspect-square bg-salon-dark bg-opacity-10 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-camera text-4xl opacity-30"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">Visit Us</h2>
+                <p class="max-w-2xl mx-auto text-lg">We'd love to welcome you to our salon</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-salon-pink p-8 rounded-2xl">
+                    <h3 class="text-xl font-serif font-bold mb-4">Salon Hours</h3>
+                    <ul class="space-y-3">
+                        <li class="flex justify-between border-b border-salon-dark border-opacity-10 pb-2">
+                            <span>Monday - Friday</span>
+                            <span class="font-medium">9:00 AM - 7:00 PM</span>
+                        </li>
+                        <li class="flex justify-between border-b border-salon-dark border-opacity-10 pb-2">
+                            <span>Saturday</span>
+                            <span class="font-medium">9:00 AM - 5:00 PM</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Sunday</span>
+                            <span class="font-medium">Closed</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-salon-pink p-8 rounded-2xl">
+                    <h3 class="text-xl font-serif font-bold mb-4">Contact Info</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-salon-gold mt-1 mr-4"></i>
+                            <span>123 Beauty Street, Colombo, Sri Lanka</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone-alt text-salon-gold mt-1 mr-4"></i>
+                            <span>(077) 123-4567</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope text-salon-gold mt-1 mr-4"></i>
+                            <span>hello@dinushasalon.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-salon-pink p-8 rounded-2xl">
+                    <h3 class="text-xl font-serif font-bold mb-4">Follow Us</h3>
+                    <p class="mb-4">Stay updated on promotions and beauty tips</p>
+                    <div class="flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-salon-dark bg-opacity-10 hover:bg-salon-gold flex items-center justify-center transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-salon-dark bg-opacity-10 hover:bg-salon-gold flex items-center justify-center transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-salon-dark bg-opacity-10 hover:bg-salon-gold flex items-center justify-center transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-salon-dark bg-opacity-10 hover:bg-salon-gold flex items-center justify-center transition">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-salon-dark text-white py-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-serif font-bold mb-4">Dinusha Salon</h3>
+                    <p class="opacity-80">Redefining beauty with artistry, precision, and care since 2010.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#about" class="opacity-80 hover:opacity-100 hover:text-salon-gold transition">About
+                                Us</a></li>
+                        <li><a href="#services"
+                                class="opacity-80 hover:opacity-100 hover:text-salon-gold transition">Services</a></li>
+                        <li><a href="#team" class="opacity-80 hover:opacity-100 hover:text-salon-gold transition">Our
+                                Team</a></li>
+                        <li><a href="#contact"
+                                class="opacity-80 hover:opacity-100 hover:text-salon-gold transition">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-salon-gold transition">Hair
+                                Services</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-salon-gold transition">Skin
+                                Care</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-salon-gold transition">Bridal
+                                Packages</a></li>
+                        <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-salon-gold transition">Nail
+                                Art</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Newsletter</h4>
+                    <p class="opacity-80 mb-3">Subscribe for beauty tips and special offers</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Your email"
+                            class="px-4 py-2 rounded-l-lg bg-salon-dark bg-opacity-50 border border-salon-gold border-opacity-30 focus:outline-none w-full">
+                        <button type="submit" class="bg-salon-gold text-salon-dark px-4 py-2 rounded-r-lg font-bold">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div
+                class="border-t border-white border-opacity-10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-sm opacity-80 mb-4 md:mb-0">&copy; 2025 Dinusha Salon. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-sm opacity-80 hover:opacity-100 hover:text-salon-gold transition">Privacy
+                        Policy</a>
+                    <a href="#" class="text-sm opacity-80 hover:opacity-100 hover:text-salon-gold transition">Terms of
+                        Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a href="#booking"
+            class="w-14 h-14 rounded-full bg-salon-gold shadow-lg flex items-center justify-center text-salon-dark hover:bg-opacity-90 transition transform hover:scale-110">
+            <i class="fas fa-calendar-alt text-xl"></i>
+        </a>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Three.js Background
+        document.addEventListener('DOMContentLoaded', function () {
+            // Three.js setup
+            const bgContainer = document.getElementById('threejs-bg');
+
+            if (bgContainer) {
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                bgContainer.appendChild(renderer.domElement);
+
+                // Create floating geometry
+                const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+                const material = new THREE.MeshBasicMaterial({
+                    color: 0xD4AF37,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.3
+                });
+                const knot = new THREE.Mesh(geometry, material);
+                scene.add(knot);
+
+                camera.position.z = 30;
+
+                // Animation
+                function animate() {
+                    requestAnimationFrame(animate);
+                    knot.rotation.x += 0.001;
+                    knot.rotation.y += 0.002;
+                    renderer.render(scene, camera);
+                }
+                animate();
+
+                // Handle resize
+                window.addEventListener('resize', function () {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+            }
+
+            // p5.js setup
+            const p5Container = document.getElementById('p5-container');
+            if (p5Container) {
+                new p5(function (p) {
+                    let particles = [];
+
+                    p.setup = function () {
+                        let canvas = p.createCanvas(p5Container.offsetWidth, p5Container.offsetHeight);
+                        canvas.parent('p5-container');
+
+                        // Create particles
+                        for (let i = 0; i < 50; i++) {
+                            particles.push({
+                                x: p.random(p.width),
+                                y: p.random(p.height),
+                                size: p.random(2, 6),
+                                speed: p.random(0.2, 1),
+                                angle: p.random(p.TWO_PI)
+                            });
+                        }
+                    };
+
+                    p.draw = function () {
+                        p.clear();
+                        p.noStroke();
+
+                        particles.forEach(part => {
+                            // Update position
+                            part.x += p.cos(part.angle) * part.speed;
+                            part.y += p.sin(part.angle) * part.speed;
+
+                            // Wrap around edges
+                            if (part.x < 0) part.x = p.width;
+                            if (part.x > p.width) part.x = 0;
+                            if (part.y < 0) part.y = p.height;
+                            if (part.y > p.height) part.y = 0;
+
+                            // Random direction changes
+                            if (p.random() < 0.01) {
+                                part.angle = p.random(p.TWO_PI);
+                            }
+
+                            // Draw particle
+                            p.fill(212, 175, 55, 30);
+                            p.circle(part.x, part.y, part.size);
+                        });
+                    };
+
+                    p.windowResized = function () {
+                        p.resizeCanvas(p5Container.offsetWidth, p5Container.offsetHeight);
+                    };
+                });
+            }
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Form submission
+            function submitForm() {
+                const form = document.querySelector('form');
+                if (form) {
+                    // Here you would normally send the form data to a server
+                    // For demo purposes, we'll just show an alert
+                    alert("Thank you for your appointment request! We'll contact you shortly to confirm your booking.");
+                    form.reset();
+                }
+            }
+
+            // Attach form submission to all forms for demo purposes
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    submitForm();
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
